@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Basic page setup -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Snorkelwaffle: four quick, simple games you can play in your browser.">
+  <title>Snorkelwaffle</title>
+
+  <!-- An empty icon stops the browser from asking for a missing favicon.ico (avoids a 404 in the console) -->
+  <link rel="icon" href="data:,">
+
+  <!-- Our stylesheet (relative path, so it works locally AND when hosted) -->
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <!-- ================= HEADER: 3D cube logo + site name ================= -->
+  <header class="site-header">
+    <a href="#" class="brand" id="brand-link" aria-label="Snorkelwaffle, go to home screen">
+      <!-- The cube is 6 squares ("faces") placed in 3D space with CSS -->
+      <div class="cube-scene" aria-hidden="true">
+        <div class="cube">
+          <div class="face face-front">S</div>
+          <div class="face face-back">W</div>
+          <div class="face face-right">★</div>
+          <div class="face face-left">●</div>
+          <div class="face face-top">▲</div>
+          <div class="face face-bottom">■</div>
+        </div>
+      </div>
+      <span class="brand-name">Snorkelwaffle</span>
+    </a>
+  </header>
+
+  <main>
+
+    <!-- ================= HOME SCREEN: grid of game cards ================= -->
+    <section id="home" class="view">
+      <div class="intro">
+        <h1 tabindex="-1">Pick a game</h1>
+        <p>Four quick classics. No downloads, no sign-ups. Just play.</p>
+      </div>
+
+      <div class="game-grid">
+        <!-- data-game must match the id of the game's <section> below -->
+        <button class="game-card" type="button" data-game="tictactoe">
+          <span class="card-icon" aria-hidden="true">⭕</span>
+          <span class="card-title">Tic-Tac-Toe</span>
+          <span class="card-text">Two players, one device. Get three in a row.</span>
+        </button>
+
+        <button class="game-card" type="button" data-game="memory">
+          <span class="card-icon" aria-hidden="true">🃏</span>
+          <span class="card-title">Memory Match</span>
+          <span class="card-text">Flip cards and find all eight pairs.</span>
+        </button>
+
+        <button class="game-card" type="button" data-game="snake">
+          <span class="card-icon" aria-hidden="true">🐍</span>
+          <span class="card-title">Snake</span>
+          <span class="card-text">Eat, grow, and don't bite your own tail.</span>
+        </button>
+
+        <button class="game-card" type="button" data-game="reaction">
+          <span class="card-icon" aria-hidden="true">⚡</span>
+          <span class="card-title">Reaction Time</span>
+          <span class="card-text">Click the moment the box turns green.</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= GAME 1: TIC-TAC-TOE ================= -->
+    <section id="tictactoe" class="view game-panel" hidden>
+      <div class="game-top">
+        <button class="back-btn" type="button">← Back to games</button>
+        <h2 tabindex="-1">Tic-Tac-Toe</h2>
+      </div>
+
+      <p class="status" id="ttt-status" aria-live="polite">Player X's turn</p>
+      <!-- The 9 squares are created by script.js -->
+      <div class="ttt-board" id="ttt-board"></div>
+
+      <div class="actions">
+        <button class="btn" id="ttt-restart" type="button">Restart</button>
+      </div>
+    </section>
+
+    <!-- ================= GAME 2: MEMORY MATCH ================= -->
+    <section id="memory" class="view game-panel" hidden>
+      <div class="game-top">
+        <button class="back-btn" type="button">← Back to games</button>
+        <h2 tabindex="-1">Memory Match</h2>
+      </div>
+
+      <div class="stats">
+        <span class="stat">Moves: <strong id="mem-moves">0</strong></span>
+        <span class="stat">Time: <strong id="mem-time">0:00</strong></span>
+        <span class="stat">Best: <strong id="mem-best">–</strong></span>
+      </div>
+
+      <p class="status" id="mem-status" aria-live="polite">Find all the pairs!</p>
+      <!-- The 16 cards are created by script.js -->
+      <div class="mem-grid" id="mem-grid"></div>
+
+      <div class="actions">
+        <button class="btn" id="mem-restart" type="button">New game</button>
+      </div>
+    </section>
+
+    <!-- ================= GAME 3: SNAKE ================= -->
+    <section id="snake" class="view game-panel" hidden>
+      <div class="game-top">
+        <button class="back-btn" type="button">← Back to games</button>
+        <h2 tabindex="-1">Snake</h2>
+      </div>
+
+      <div class="stats">
+        <span class="stat">Score: <strong id="snake-score">0</strong></span>
+        <span class="stat">High score: <strong id="snake-high">0</strong></span>
+      </div>
+
+      <div class="snake-wrap">
+        <!-- The canvas is 400x400 pixels inside; CSS scales it to fit the screen -->
+        <canvas id="snake-canvas" width="400" height="400" aria-label="Snake game board"></canvas>
+        <div class="snake-overlay" id="snake-overlay">
+          <p class="overlay-title" id="snake-overlay-title">Ready?</p>
+          <p class="overlay-text" id="snake-overlay-text">Press Start, or use the arrow keys / WASD.</p>
+        </div>
+      </div>
+
+      <!-- On-screen arrows (shown on touch screens and small windows) -->
+      <div class="dpad" aria-label="Snake controls">
+        <button class="dpad-btn dpad-up" type="button" data-dir="up" aria-label="Up">▲</button>
+        <button class="dpad-btn dpad-left" type="button" data-dir="left" aria-label="Left">◀</button>
+        <button class="dpad-btn dpad-right" type="button" data-dir="right" aria-label="Right">▶</button>
+        <button class="dpad-btn dpad-down" type="button" data-dir="down" aria-label="Down">▼</button>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="snake-start" type="button">Start</button>
+      </div>
+      <p class="hint">Keyboard: arrow keys or WASD to move, Space to pause.</p>
+    </section>
+
+    <!-- ================= GAME 4: REACTION TIME ================= -->
+    <section id="reaction" class="view game-panel" hidden>
+      <div class="game-top">
+        <button class="back-btn" type="button">← Back to games</button>
+        <h2 tabindex="-1">Reaction Time</h2>
+      </div>
+
+      <div class="stats">
+        <span class="stat">Last: <strong id="react-last">–</strong></span>
+        <span class="stat">Best: <strong id="react-best">–</strong></span>
+      </div>
+
+      <button class="reaction-box" id="react-box" type="button">
+        <span class="reaction-title" id="react-title">Click to start</span>
+        <span class="reaction-sub" id="react-sub">When the box turns green, click as fast as you can.</span>
+      </button>
+    </section>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer">
+    <!-- Replace YOUR NAME with your own name -->
+    <p>Made by YOUR NAME · © <span id="year"></span></p>
+  </footer>
+
+  <!-- Our JavaScript (loaded last, so all the HTML above already exists) -->
+  <script src="./script.js"></script>
+</body>
+</html>
